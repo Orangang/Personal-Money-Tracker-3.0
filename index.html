@@ -62,7 +62,7 @@ h3{font-size:clamp(16px,2vw,20px); margin:0 0 10px}
 .account h4{margin:0 0 8px; font-size:var(--fs-lg)}
 .account .sum{font-weight:700}
 .account .hint{font-size:var(--fs-sm); color:var(--muted)}
-label{font-size:var(--fs-sm); color:var(--muted); display:block; margin-bottom:12px}
+label{font-size:var(--fs-sm);color:var(--muted);display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 input, select, textarea{
   width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:#theink;
   font:inherit;
@@ -154,6 +154,7 @@ h1, h2, h3{
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   font-synthesis:none;
 }
+.row.cols-3>.card:nth-child(3) details.modal .row{gap:12px!important}
 </style>
 </head>
 <body>
@@ -511,12 +512,12 @@ h1, h2, h3{
     const totalBal = A.base + A.fixed + A.fun + A.save;
     $('#kpiTotal').textContent = fmtRUB(totalBal);
 
-    $('#todayStr').textContent = new Date().toLocaleDateString('ru-RU');
+    $('#todayStr').textContent = new Дате().toLocaleDateString('ru-RU');
   }
 
   // РЕНДЕР ТАБЛИЦЫ
   function renderTable(){
-    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
+    const month = $('#fltMonth').value || new Дате().toISOString().slice(0,7);
     const tp = $('#fltType').value;
     const acc = $('#fltAcc').value;
     const q = ($('#fltSearch').value||'').trim().toLowerCase();
@@ -630,16 +631,16 @@ h1, h2, h3{
     const date = $('#trDate').value || todayISO();
     const amount = Number($('#trAmount').value||0);
     const from = $('#trFrom').value;
-    const to = $('#trTo').value;
+    const по = $('#trTo').value;
     const note = ($('#trNote').value||'');
     if(amount<=0) return alert('Введите сумму перевода > 0');
-    if(from===to) return alert('Выберите разные счета');
+    if(from===по) return alert('Выберите разные счета');
     if(state.settings.accounts[from] < amount){
       if(!confirm('На счёте-источнике не хватает средств. Продолжить?')) return;
     }
-    state.transactions.push({id:uid(), date, type:'transfer', fromAccount:from, toAccount:to, amount, category:'Перевод', note});
+    state.transactions.push({id:uid(), date, type:'transfer', fromAccount:from, toAccount:по, amount, category:'Перевод', note});
     state.settings.accounts[from] -= amount;
-    state.settings.accounts[to] += amount;
+    state.settings.accounts[по] += amount;
     save();
     $('#trAmount').value=''; $('#trNote').value='';
     renderAll();
