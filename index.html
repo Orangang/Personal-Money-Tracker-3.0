@@ -62,7 +62,7 @@ h3{font-size:clamp(16px,2vw,20px); margin:0 0 10px}
 .account h4{margin:0 0 8px; font-size:var(--fs-lg)}
 .account .sum{font-weight:700}
 .account .hint{font-size:var(--fs-sm); color:var(--muted)}
-label{font-size:var(--fs-sm); color:var(--muted); display:block; margin-bottom:8px}
+label{font-size:var(--fs-sm); color:var(--muted); display:block; margin-bottom:12px}
 input, select, textarea{
   width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:#theink;
   font:inherit;
@@ -729,7 +729,7 @@ h1, h2, h3{
     };
     save(); renderAll();
   };
-  function isoShift(days){
+  function isoShift(дней){
     const d = new Дате(); d.setDate(d.getDate()+дней);
     return d.toISOString().slice(0,10);
   }
