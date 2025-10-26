@@ -393,7 +393,7 @@ h1, h2, h3{
     </div>
   </section>
 
-<footer>сделано руками dmitry-design.ru</footer>
+  <footer>v1 • локальное хранение • сделано под тебя</footer>
 </div>
 
 <script>
@@ -410,9 +410,9 @@ h1, h2, h3{
   const fmtRUB = (n) => (Number(n)||0).toLocaleString('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0});
   const fmtNum = (n, d=2) => (Number(n)||0).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d});
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const todayISO = () => new Дате().toISOString().slice(0,10);
-  const monthStr = (d=new Дате()) => d.toLocaleString('ru-RU',{month:'long', year:'numeric'});
-  const uid = () => Math.random().toString(36).slice(2,10) + Дате.now().toString(36).slice(-4);
+  const todayISO = () => new Date().toISOString().slice(0,10);
+  const monthStr = (d=new Date()) => d.toLocaleString('ru-RU',{month:'long', year:'numeric'});
+  const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
   const round = (n) => Math.round((Number(n)||0));
 
   // СТЕЙТ
@@ -440,7 +440,7 @@ h1, h2, h3{
   $('#expDate').value = todayISO();
   $('#trDate').value = todayISO();
   $('#debtDate').value = todayISO();
-  $('#fltMonth').value = new Дате().toISOString().slice(0,7);
+  $('#fltMonth').value = new Date().toISOString().slice(0,7);
 
   // Настройки -> значения
   function fillSettingsUI(){
