@@ -33,6 +33,7 @@ body{
   font:400 var(--fs-base)/1.45 "SF Pro Display", -apple-system, system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
 }
 a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
 .container{max-width:1200px; margin:0 auto; padding:20px;}
 h1{font-size:clamp(20px,2.6vw,28px); margin:0 0 12px}
 h2{font-size:clamp(18px,2.2vw,22px); margin:0 0 12px}
@@ -61,7 +62,7 @@ h3{font-size:clamp(16px,2vw,20px); margin:0 0 10px}
 .account h4{margin:0 0 8px; font-size:var(--fs-lg)}
 .account .sum{font-weight:700}
 .account .hint{font-size:var(--fs-sm); color:var(--muted)}
-label{font-size:var(--fs-sm); color:var(--muted); display:block; margin-bottom:6px}
+label{font-size:var(--fs-sm); color:var(--muted); display:block; margin-bottom:8px}
 input, select, textarea{
   width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:#theink;
   font:inherit;
@@ -393,7 +394,7 @@ h1, h2, h3{
     </div>
   </section>
 
-  <footer>v1 • локальное хранение • сделано под тебя</footer>
+  <footer>сделано руками <a href="https://dmitry-design.ru/" target="_blank" rel="noopener">dmitry-design.ru</a></footer>
 </div>
 
 <script>
@@ -728,7 +729,7 @@ h1, h2, h3{
     };
     save(); renderAll();
   };
-  function isoShift(дней){
+  function isoShift(days){
     const d = new Дате(); d.setDate(d.getDate()+дней);
     return d.toISOString().slice(0,10);
   }
