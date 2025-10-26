@@ -30,12 +30,10 @@
 html,body{height:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-font:400 var(--fs-base)/1.45 "SF Pro Display", -apple-system, system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  font:400 var(--fs-base)/1.45 "SF Pro Display", -apple-system, system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
 }
 a{color:var(--accent); text-decoration:none}
-.container{
-  max-width:1200px; margin:0 auto; padding:20px;
-}
+.container{max-width:1200px; margin:0 auto; padding:20px;}
 h1{font-size:clamp(20px,2.6vw,28px); margin:0 0 12px}
 h2{font-size:clamp(18px,2.2vw,22px); margin:0 0 12px}
 h3{font-size:clamp(16px,2vw,20px); margin:0 0 10px}
@@ -55,21 +53,17 @@ h3{font-size:clamp(16px,2vw,20px); margin:0 0 10px}
 .kpis{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
 .kpi{padding:12px; border:1px solid var(--line); border-radius:10px}
 .kpi b{font-size:var(--fs-lg)}
-.progress{
-  height:10px; background:#f1f1f1; border-radius:999px; overflow:hidden; border:1px solid var(--line)
-}
+.progress{height:10px; background:#f1f1f1; border-radius:999px; overflow:hidden; border:1px solid var(--line)}
 .progress > i{display:block; height:100%; background:linear-gradient(90deg, #6aa3ff, #2d6cdf)}
 .grid-accounts{display:grid; gap:12px}
 @media (min-width:640px){ .grid-accounts{grid-template-columns:repeat(5,1fr)} }
-.account{
-  border:1px solid var(--line); border-radius:10px; padding:12px;
-}
+.account{border:1px solid var(--line); border-radius:10px; padding:12px;}
 .account h4{margin:0 0 8px; font-size:var(--fs-lg)}
 .account .sum{font-weight:700}
 .account .hint{font-size:var(--fs-sm); color:var(--muted)}
 label{font-size:var(--fs-sm); color:var(--muted); display:block; margin-bottom:6px}
 input, select, textarea{
-  width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink);
+  width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:#theink;
   font:inherit;
 }
 .controls{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
@@ -95,7 +89,7 @@ details.modal > summary::-webkit-details-marker{display:none}
 .summary-row small{color:var(--muted)}
 </style>
 
-   <style>
+<style>
 @font-face{
   font-family:"SF Pro Display";
   font-style:normal;
@@ -104,15 +98,11 @@ details.modal > summary::-webkit-details-marker{display:none}
   font-display:swap;
 }
 
-      /* =========================
-   iOS/WebKit: выравниваем дату/месяц и select под общие поля
-   ========================= */
+/* iOS/WebKit: выравнивание date/month/select под общие поля */
 input, select, textarea{
-  min-height:48px;               /* выше и кликабельнее */
-  padding:12px 14px;             /* как у остальных полей */
+  min-height:48px;
+  padding:12px 14px;
 }
-
-/* Дата/Месяц рисуем как обычный input (исправляет "длиннее и уже") */
 input[type="date"],
 input[type="month"]{
   -webkit-appearance:none;
@@ -128,10 +118,8 @@ input[type="month"]{
 }
 input[type="date"]::-webkit-date-and-time-value,
 input[type="month"]::-webkit-date-and-time-value{ text-align:left }
-
-/* Select: делаем такую же высоту, как у input’ов (Счёт, Тип, Откуда, Куда) */
 select{
-  -webkit-appearance:none;       /* чтобы высота реально применялась */
+  -webkit-appearance:none;
   appearance:none;
   min-height:48px;
   line-height:1.2;
@@ -142,123 +130,30 @@ select{
   border-radius:8px;
 }
 
-/* ===== Транзакции: кнопки в один ряд под заголовком на мобиле ===== */
+/* Транзакции: кнопки в одну линию, на мобиле — скроллятся */
 @media (max-width:640px){
-  /* заголовок и панель кнопок — столбиком */
-  .card .card-title{ 
-    flex-direction:column; 
-    align-items:flex-start; 
-    gap:6px;
-  }
+  .card .card-title{flex-direction:column; align-items:flex-start; gap:6px;}
   .card .card-title .controls{
-    width:100%;
-    display:flex;
-    flex-wrap:nowrap;           /* в одну строку */
-    gap:8px;
-    overflow:auto;              /* если не влезают — скролл по оси X */
-    padding-top:2px;
+    width:100%; display:flex; flex-wrap:nowrap; gap:8px; overflow:auto; padding-top:2px;
   }
-  .card .card-title .controls button{
-    white-space:nowrap;         /* "Экспорт JSON", "Импорт JSON", "Стереть всё" не переносятся */
-    flex:0 0 auto;
-  }
-
-  /* На мобилке 16px — чтобы iOS не зумил поле при фокусе */
-  input, select, textarea{ font-size:16px }
+  .card .card-title .controls button{white-space:nowrap; flex:0 0 auto;}
+  input, select, textarea{ font-size:16px } /* чтобы iOS не зумил */
 }
 
-/* Чуть увеличим кликабельность всех контролов по умолчанию */
+/* Единая высота кнопок */
 button{ min-height:40px }
-
-
-      /* =========================
-   1) ЕДИНАЯ ВЫСОТА КНОПОК (как у "Импорт JSON")
-   ========================= */
 .card .card-title .controls button{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  height:44px;            /* единая высота */
-  min-height:44px;
-  padding:0 16px;         /* одинаковые боковые */
-  line-height:1;          /* без влияния line-height */
+  display:inline-flex; align-items:center; justify-content:center;
+  height:44px; min-height:44px; padding:0 16px; line-height:1;
 }
 
-/* =========================
-   2) ОТСТУП МЕЖДУ ЛЕЙБЛОМ И ПОЛЕМ
-   (везде: input/select/textarea)
-   ========================= */
-label > :is(input,select,textarea){
-  margin-top:6px;         /* расстояние между подписью и полем */
-}
-
-/* =========================
-   3) МОБИЛЬНЫЙ РЯД КНОПОК ПОД ЗАГОЛОВКОМ "Транзакции"
-   (сохраняем и на десктопе — всё в одну линию)
-   ========================= */
-.card .card-title{ gap:8px; }
-.card .card-title .controls{
-  display:flex;
-  flex-wrap:nowrap;
-  gap:8px;
-}
-@media (max-width: 640px){
-  .card .card-title{ flex-direction:column; align-items:flex-start; }
-  .card .card-title .controls{
-    width:100%;
-    overflow:auto;     /* если не влезают — скролл по X */
-  }
-  .card .card-title .controls button{ flex:0 0 auto; white-space:nowrap; }
-}
-
-/* =========================
-   4) ВЫСОТА СЕЛЕКТОВ/ДАТ — ЧУТЬ ВЫШЕ, ОДИНАКОВО
-   (Тип / Счёт / Откуда / Куда + дата/месяц)
-   ========================= */
-input, select, textarea{
-  min-height:48px;        /* кликабельно на мобиле */
-  padding:12px 14px;
-}
-input[type="date"], input[type="month"]{
-  -webkit-appearance:none;
-  appearance:none;
-  width:100%;
-  min-height:48px;
-  padding:12px 14px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:#fff;
-  font:inherit;
-}
-select{
-  -webkit-appearance:none;
-  appearance:none;
-  min-height:48px;
-  padding:12px 14px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:#fff;
-  font:inherit;
-}
-
-/* =========================
-   5) ЕДИНАЯ "ЖИРНОСТЬ" ЗАГОЛОВКОВ НА МОБИЛЕ
-   (на iOS иногда выглядит толще)
-   ========================= */
+/* Единая жирность заголовков */
 h1, h2, h3{
-  font-weight:600;                 /* фиксированное значение */
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  font-synthesis: none;            /* запрет "фейкового" bold/italic */
+  font-weight:600;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  font-synthesis:none;
 }
-/* не даём iOS менять размер шрифта при фокусе */
-@media (max-width:640px){
-  input, select, textarea{ font-size:16px; }
-}
-
 </style>
-
-   
 </head>
 <body>
 <div class="container">
@@ -293,7 +188,7 @@ h1, h2, h3{
       </div>
     </div>
 
-    <div class="grid-accounts" id="accountsGrid"><!-- заполнится из JS --></div>
+    <div class="grid-accounts" id="accountsGrid"></div>
 
     <div style="margin-top:12px">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px">
@@ -465,7 +360,7 @@ h1, h2, h3{
             <th></th>
           </tr>
         </thead>
-        <tbody><!-- заполняется JS --></tbody>
+        <tbody></tbody>
       </table>
     </div>
   </section>
@@ -503,51 +398,36 @@ h1, h2, h3{
 
 <script>
 /* ============================================================================
-   Personal Money Tracker — MVP v1
+   Personal Money Tracker — MVP v1 (fixed)
    Хранение: localStorage (ключ dm_fin_v1)
-   Всё работает оффлайн. Никаких зависимостей.
    ========================================================================== */
 (() => {
   "use strict";
 
-  // --------------------------
   // УТИЛИТЫ
-  // --------------------------
   const $ = (sel, root=document) => root.querySelector(sel);
   const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-  const fmtRUB = (n) => (Number(n)||0).toLocaleString('ru-RU', {style:'currency', currency:'RUB', maximumFractionDigits:0});
-  const fmtNum = (n, d=2) => (Number(n)||0).toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const fmtRUB = (n) => (Number(n)||0).toLocaleString('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0});
+  const fmtNum = (n, d=2) => (Number(n)||0).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d});
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
   const todayISO = () => new Date().toISOString().slice(0,10);
-  const monthStr = (d=new Date()) => {
-    return d.toLocaleString('ru-RU', {month:'long', year:'numeric'});
-  };
+  const monthStr = (d=new Date()) => d.toLocaleString('ru-RU',{month:'long', year:'numeric'});
   const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+  const round = (n) => Math.round((Number(n)||0));
 
-  // --------------------------
-  // ХРАНИЛИЩЕ / СТЕЙТ
-  // --------------------------
+  // СТЕЙТ
   const LS_KEY = 'dm_fin_v1';
-  /** @type {{
-      settings:{
-        accounts:{base:number,fixed:number,fun:number,save:number,debtTotal:number,debtPaid:number},
-        autosplit:{base:number,fixed:number,fun:number,save:number},
-        monthStartDay:number
-      },
-      transactions:Array<any>
-  }} */
   let state = load();
 
   function load(){
     try{
       const raw = localStorage.getItem(LS_KEY);
-      if(raw){ return JSON.parse(raw); }
+      if(raw) return JSON.parse(raw);
     }catch(e){}
-    // дефолт
     return {
       settings:{
         accounts:{ base:0, fixed:0, fun:0, save:0, debtTotal:0, debtPaid:0 },
-        autosplit:{ base:40, fixed:30, fun:10, save:20 }, // можно менять
+        autosplit:{ base:40, fixed:30, fun:10, save:20 },
         monthStartDay:1
       },
       transactions:[]
@@ -555,9 +435,7 @@ h1, h2, h3{
   }
   function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
-  // --------------------------
   // ИНИЦИАЛИЗАЦИЯ ПОЛЕЙ
-  // --------------------------
   $('#incDate').value = todayISO();
   $('#expDate').value = todayISO();
   $('#trDate').value = todayISO();
@@ -580,24 +458,18 @@ h1, h2, h3{
     $('#spSave').value = state.settings.autosplit.save;
     updateSplitSumHelp();
   }
-
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
   function updateSplitSumHelp(){
     const sum = ['base','fixed','fun','save'].reduce((s,k)=>s+Number($('#sp'+cap(k)).value||0),0);
     $('#splitSumHelp').textContent = `Сумма долей: ${sum}% (должно быть 100%).`;
     $('#splitSumHelp').style.color = (sum===100)? 'var(--muted)' : 'var(--bad)';
   }
-  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
-  ['spBase','spFixed','spFun','spSave'].forEach(id => {
-    $('#'+id).addEventListener('input', updateSplitSumHelp);
-  });
+  ['spBase','spFixed','spFun','spSave'].forEach(id => $('#'+id).addEventListener('input', updateSplitSumHelp));
 
-  // --------------------------
   // РЕНДЕР ДАШБОРДА
-  // --------------------------
   function renderDashboard(){
     $('#currentMonthBadge').textContent = monthStr(new Date());
 
-    // Балансы счетов
     const A = state.settings.accounts;
     const accs = [
       {key:'base', title:'Базовый', hint:'зарплата'},
@@ -620,13 +492,11 @@ h1, h2, h3{
       grid.appendChild(div);
     });
 
-    // Прогресс долга
     const pct = (A.debtTotal>0) ? clamp((A.debtPaid/A.debtTotal)*100,0,100) : 0;
     $('#debtProgress').style.width = pct.toFixed(1)+'%';
     $('#debtLabel').textContent = `${fmtRUB(A.debtPaid)} из ${fmtRUB(A.debtTotal)} (${pct.toFixed(1)}%)`;
 
-    // KPI месяц/сегодня
-    const month = $('#fltMonth').value || new Дате().toISOString().slice(0,7);
+    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
     const listM = state.transactions.filter(t => (t.date||'').startsWith(month));
     const sumIncome = listM.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
     const sumExpense = listM.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
@@ -640,25 +510,21 @@ h1, h2, h3{
     const totalBal = A.base + A.fixed + A.fun + A.save;
     $('#kpiTotal').textContent = fmtRUB(totalBal);
 
-    $('#todayStr').textContent = new Дате().toLocaleDateString('ru-RU');
+    $('#todayStr').textContent = new Date().toLocaleDateString('ru-RU');
   }
 
-  // --------------------------
-  // РЕНДЕР ТАБЛИЦЫ ТРАНЗАКЦИЙ
-  // --------------------------
+  // РЕНДЕР ТАБЛИЦЫ
   function renderTable(){
-    const month = $('#fltMonth').value || new Дате().toISOString().slice(0,7);
+    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
     const tp = $('#fltType').value;
     const acc = $('#fltAcc').value;
     const q = ($('#fltSearch').value||'').trim().toLowerCase();
 
-    let list = state.transactions.slice().sort((a,b)=> (a.date>b.date? -1: a.date<b.date? 1: 0)); // по дате, свежие вверх
+    let list = state.transactions.slice().sort((a,b)=> (a.date>b.date? -1: a.date<b.date? 1: 0));
     list = list.filter(t => (t.date||'').startsWith(month));
     if(tp) list = list.filter(t => t.type===tp);
     if(acc){
-      list = list.filter(t => {
-        return t.account===acc || t.fromAccount===acc || t.toAccount===acc;
-      });
+      list = list.filter(t => t.account===acc || t.fromAccount===acc || t.toAccount===acc);
     }
     if(q){
       list = list.filter(t => ((t.category||'')+(t.note||'')).toLowerCase().includes(q));
@@ -668,7 +534,6 @@ h1, h2, h3{
     tbody.innerHTML = '';
     for(const t of list){
       const tr = document.createElement('tr');
-      const sum = (t.type==='expense' || t.type==='transfer' && t.fromAccount) ? -t.amount : t.amount;
       const accounts = (
         t.type==='transfer' ? `${labelAcc(t.fromAccount)} → ${labelAcc(t.toAccount)}` :
         t.type==='income'   ? `${labelAcc(t.account)} (+)` :
@@ -688,7 +553,7 @@ h1, h2, h3{
     }
 
     $('#listInfo').textContent = `Показано: ${list.length} операций. Всего в базе: ${state.transactions.length}.`;
-    // навесить удаление
+
     $$('button[data-del]').forEach(btn=>{
       btn.onclick = () => {
         const id = btn.getAttribute('data-del');
@@ -698,36 +563,23 @@ h1, h2, h3{
       };
     });
   }
+  function labelAcc(k){ return ({base:'Базовый', fixed:'Расходный', fun:'Весёлый', save:'Накопления'})[k] || '—'; }
+  function labelType(t){ return ({income:'Доход', expense:'Расход', transfer:'Перевод', debt:'Долг'})[t] || t; }
 
-  function labelAcc(k){
-    return ({base:'Базовый', fixed:'Расходный', fun:'Весёлый', save:'Накопления'})[k] || '—';
-  }
-  function labelType(t){
-    return ({income:'Доход', expense:'Расход', transfer:'Перевод', debt:'Долг'})[t] || t;
-  }
-
-  // --------------------------
-  // ОПЕРАЦИИ: ДОБАВИТЬ ДОХОД
-  // --------------------------
+  // ДОХОД
   function incomeSplit(amount){
     const s = state.settings.autosplit;
     const parts = {
       base: round(amount * (s.base/100)),
       fixed: round(amount * (s.fixed/100)),
-      fun: round(amount * (s.fun/100)),
-      save: round(amount * (s.save/100)),
+      fun:   round(amount * (s.fun/100)),
+      save:  round(amount * (s.save/100)),
     };
-    // Нормализация до копейки/рубля: пусть будет целые рубли
     const sum = parts.base + parts.fixed + parts.fun + parts.save;
     const delta = round(amount - sum);
-    if(delta !== 0){
-      // доброс в "базовый"
-      parts.base += delta;
-    }
+    if(delta !== 0) parts.base += delta; // доброс в базовый
     return parts;
   }
-  const round = (n) => Math.round((Number(n)||0));
-
   $('#btnPreviewSplit').onclick = () => {
     const amount = Number($('#incAmount').value||0);
     if(!amount){ $('#splitPreview').style.display='none'; return; }
@@ -736,40 +588,25 @@ h1, h2, h3{
     $('#splitPreview').textContent =
       `Распределение: Базовый ${fmtRUB(p.base)}, Расходный ${fmtRUB(p.fixed)}, Весёлый ${fmtRUB(p.fun)}, Накопления ${fmtRUB(p.save)}.`;
   };
-
   $('#btnAddIncome').onclick = () => {
     const date = $('#incDate').value || todayISO();
     const amount = Number($('#incAmount').value||0);
     const category = ($('#incCategory').value||'Доход');
     const note = ($('#incNote').value||'');
     if(amount<=0) return alert('Введите сумму дохода > 0');
-
-    // 1) создаём "логические" транзакции дохода (по одному на счёт)
     const split = incomeSplit(amount);
-    const txs = [];
     for(const k of ['base','fixed','fun','save']){
       if(split[k] > 0){
-        txs.push({
-          id: uid(), date, type:'income', account:k, amount: split[k],
-          category, note
-        });
+        state.transactions.push({id:uid(), date, type:'income', account:k, amount: split[k], category, note});
         state.settings.accounts[k] += split[k];
       }
     }
-    state.transactions.push(...txs);
     save();
-    clearIncomeForm();
+    $('#incAmount').value=''; $('#incNote').value=''; $('#splitPreview').style.display='none';
     renderAll();
   };
-  function clearIncomeForm(){
-    $('#incAmount').value = '';
-    $('#incNote').value = '';
-    $('#splitPreview').style.display='none';
-  }
 
-  // --------------------------
-  // ОПЕРАЦИИ: ДОБАВИТЬ РАСХОД
-  // --------------------------
+  // РАСХОД
   $('#btnAddExpense').onclick = () => {
     const date = $('#expDate').value || todayISO();
     const amount = Number($('#expAmount').value||0);
@@ -777,51 +614,37 @@ h1, h2, h3{
     const category = ($('#expCategory').value||'Расход');
     const note = ($('#expNote').value||'');
     if(amount<=0) return alert('Введите сумму расхода > 0');
-
     if(state.settings.accounts[account] < amount){
       if(!confirm('На счёте не хватает средств. Продолжить?')) return;
     }
-
-    state.transactions.push({
-      id: uid(), date, type:'expense', account, amount, category, note
-    });
+    state.transactions.push({id:uid(), date, type:'expense', account, amount, category, note});
     state.settings.accounts[account] -= amount;
     save();
-    $('#expAmount').value='';
-    $('#expNote').value='';
+    $('#expAmount').value=''; $('#expNote').value='';
     renderAll();
   };
 
-  // --------------------------
-  // ОПЕРАЦИИ: ПЕРЕВОД
-  // --------------------------
+  // ПЕРЕВОД
   $('#btnTransfer').onclick = () => {
     const date = $('#trDate').value || todayISO();
     const amount = Number($('#trAmount').value||0);
     const from = $('#trFrom').value;
-    const по = $('#trTo').value;
+    const to = $('#trTo').value;
     const note = ($('#trNote').value||'');
     if(amount<=0) return alert('Введите сумму перевода > 0');
-    if(from===по) return alert('Выберите разные счета');
-
+    if(from===to) return alert('Выберите разные счета');
     if(state.settings.accounts[from] < amount){
       if(!confirm('На счёте-источнике не хватает средств. Продолжить?')) return;
     }
-
-    state.transactions.push({
-      id: uid(), date, type:'transfer', fromAccount:from, toAccount:по, amount, category:'Перевод', note
-    });
+    state.transactions.push({id:uid(), date, type:'transfer', fromAccount:from, toAccount:to, amount, category:'Перевод', note});
     state.settings.accounts[from] -= amount;
-    state.settings.accounts[по] += amount;
+    state.settings.accounts[to] += amount;
     save();
-    $('#trAmount').value='';
-    $('#trNote').value='';
+    $('#trAmount').value=''; $('#trNote').value='';
     renderAll();
   };
 
-  // --------------------------
-  // ОПЕРАЦИИ: ПЛАТЁЖ ПО ДОЛГУ
-  // --------------------------
+  // ДОЛГ
   $('#btnDebtPay').onclick = () => {
     const date = $('#debtDate').value || todayISO();
     const amount = Number($('#debtPayAmount').value||0);
@@ -829,32 +652,19 @@ h1, h2, h3{
     const note = ($('#debtNote').value||'');
     if(amount<=0) return alert('Введите сумму платежа > 0');
 
-    // транзакция "долг"
-    state.transactions.push({
-      id: uid(), date, type:'debt', amount, account: from || undefined,
-      category:'Платёж по долгу', note
-    });
+    state.transactions.push({id:uid(), date, type:'debt', amount, account: from || undefined, category:'Платёж по долгу', note});
 
-    // учесть списание с счёта, если выбран
     if(from){
       if(state.settings.accounts[from] < amount){
         if(!confirm('На счёте не хватает средств. Продолжить?')) return;
       }
       state.settings.accounts[from] -= amount;
     }
-
-    // обновить прогресс долга
-    state.settings.accounts.debtPaid = clamp(
-      round(state.settings.accounts.debtPaid + amount),
-      0,
-      round(state.settings.accounts.debtTotal)
-    );
+    state.settings.accounts.debtPaid = clamp(round(state.settings.accounts.debtPaid + amount), 0, round(state.settings.accounts.debtTotal));
     save();
-    $('#debtPayAmount').value='';
-    $('#debtNote').value='';
+    $('#debtPayAmount').value=''; $('#debtNote').value='';
     renderAll();
   };
-
   $('#btnDebtReset').onclick = () => {
     if(confirm('Сбросить прогресс погашения долга?')){
       state.settings.accounts.debtPaid = 0;
@@ -862,17 +672,13 @@ h1, h2, h3{
     }
   };
 
-  // --------------------------
-  // ФИЛЬТРЫ ТРАНЗАКЦИЙ
-  // --------------------------
+  // ФИЛЬТРЫ
   $('#fltMonth').oninput = () => { renderDashboard(); renderTable(); };
   $('#fltType').oninput = renderTable;
   $('#fltAcc').oninput  = renderTable;
-  $('#fltSearch').oninput = () => { renderTable(); };
+  $('#fltSearch').oninput = renderTable;
 
-  // --------------------------
   // НАСТРОЙКИ
-  // --------------------------
   $('#btnSaveSettings').onclick = () => {
     const A = state.settings.accounts;
     A.base = Number($('#stBase').value||0);
@@ -891,13 +697,13 @@ h1, h2, h3{
     state.settings.monthStartDay = clamp(Number($('#stMonthStart').value||1),1,28);
 
     const sum = Object.values(state.settings.autosplit).reduce((s,n)=>s+Number(n||0),0);
-    if(sum!==100){ return alert('Сумма долей должна быть 100%.'); }
+    if(sum!==100) return alert('Сумма долей должна быть 100%.');
 
     save(); renderAll();
     alert('Настройки сохранены.');
   };
 
-  // демо-данные
+  // ДЕМО-ДАННЫЕ
   $('#btnFillDemo').onclick = () => {
     if(!confirm('Загрузить демо-данные и перезаписать текущие?')) return;
     state = {
@@ -927,9 +733,7 @@ h1, h2, h3{
     return d.toISOString().slice(0,10);
   }
 
-  // --------------------------
   // ЭКСПОРТ / ИМПОРТ / WIPE
-  // --------------------------
   $('#btnExport').onclick = () => {
     const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
     const a = document.createElement('a');
@@ -963,18 +767,13 @@ h1, h2, h3{
     }
   };
 
-  // --------------------------
   // ГЛАВНЫЙ РЕНДЕР
-  // --------------------------
-  function renderAll(){
-    fillSettingsUI();
-    renderDashboard();
-    renderTable();
-  }
-
-  // старт
+  function renderAll(){ fillSettingsUI(); renderDashboard(); renderTable(); }
   renderAll();
 
+  // Мини-логгер ошибок (поможет ловить подобные опечатки на проде)
+  window.addEventListener('error', e => console.error('GlobalError:', e.message, e.filename, e.lineno));
+  window.addEventListener('unhandledrejection', e => console.error('UnhandledRejection:', e.reason));
 })();
 </script>
 </body>
