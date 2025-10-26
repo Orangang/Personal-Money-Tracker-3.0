@@ -30,7 +30,7 @@
 html,body{height:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font:400 var(--fs-base)/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+font:400 var(--fs-base)/1.45 "SF Pro Display", -apple-system, system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
 }
 a{color:var(--accent); text-decoration:none}
 .container{
@@ -94,6 +94,171 @@ details.modal > summary::-webkit-details-marker{display:none}
 .summary-row{display:flex; align-items:center; justify-content:space-between; gap:8px}
 .summary-row small{color:var(--muted)}
 </style>
+
+   <style>
+@font-face{
+  font-family:"SF Pro Display";
+  font-style:normal;
+  font-weight:100 900;
+  src:local("SF Pro Display"), local("SFProDisplay-Regular");
+  font-display:swap;
+}
+
+      /* =========================
+   iOS/WebKit: выравниваем дату/месяц и select под общие поля
+   ========================= */
+input, select, textarea{
+  min-height:48px;               /* выше и кликабельнее */
+  padding:12px 14px;             /* как у остальных полей */
+}
+
+/* Дата/Месяц рисуем как обычный input (исправляет "длиннее и уже") */
+input[type="date"],
+input[type="month"]{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  min-height:48px;
+  line-height:1.2;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  font:inherit;
+}
+input[type="date"]::-webkit-date-and-time-value,
+input[type="month"]::-webkit-date-and-time-value{ text-align:left }
+
+/* Select: делаем такую же высоту, как у input’ов (Счёт, Тип, Откуда, Куда) */
+select{
+  -webkit-appearance:none;       /* чтобы высота реально применялась */
+  appearance:none;
+  min-height:48px;
+  line-height:1.2;
+  padding:12px 14px;
+  font:inherit;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+
+/* ===== Транзакции: кнопки в один ряд под заголовком на мобиле ===== */
+@media (max-width:640px){
+  /* заголовок и панель кнопок — столбиком */
+  .card .card-title{ 
+    flex-direction:column; 
+    align-items:flex-start; 
+    gap:6px;
+  }
+  .card .card-title .controls{
+    width:100%;
+    display:flex;
+    flex-wrap:nowrap;           /* в одну строку */
+    gap:8px;
+    overflow:auto;              /* если не влезают — скролл по оси X */
+    padding-top:2px;
+  }
+  .card .card-title .controls button{
+    white-space:nowrap;         /* "Экспорт JSON", "Импорт JSON", "Стереть всё" не переносятся */
+    flex:0 0 auto;
+  }
+
+  /* На мобилке 16px — чтобы iOS не зумил поле при фокусе */
+  input, select, textarea{ font-size:16px }
+}
+
+/* Чуть увеличим кликабельность всех контролов по умолчанию */
+button{ min-height:40px }
+
+
+      /* =========================
+   1) ЕДИНАЯ ВЫСОТА КНОПОК (как у "Импорт JSON")
+   ========================= */
+.card .card-title .controls button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:44px;            /* единая высота */
+  min-height:44px;
+  padding:0 16px;         /* одинаковые боковые */
+  line-height:1;          /* без влияния line-height */
+}
+
+/* =========================
+   2) ОТСТУП МЕЖДУ ЛЕЙБЛОМ И ПОЛЕМ
+   (везде: input/select/textarea)
+   ========================= */
+label > :is(input,select,textarea){
+  margin-top:6px;         /* расстояние между подписью и полем */
+}
+
+/* =========================
+   3) МОБИЛЬНЫЙ РЯД КНОПОК ПОД ЗАГОЛОВКОМ "Транзакции"
+   (сохраняем и на десктопе — всё в одну линию)
+   ========================= */
+.card .card-title{ gap:8px; }
+.card .card-title .controls{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:8px;
+}
+@media (max-width: 640px){
+  .card .card-title{ flex-direction:column; align-items:flex-start; }
+  .card .card-title .controls{
+    width:100%;
+    overflow:auto;     /* если не влезают — скролл по X */
+  }
+  .card .card-title .controls button{ flex:0 0 auto; white-space:nowrap; }
+}
+
+/* =========================
+   4) ВЫСОТА СЕЛЕКТОВ/ДАТ — ЧУТЬ ВЫШЕ, ОДИНАКОВО
+   (Тип / Счёт / Откуда / Куда + дата/месяц)
+   ========================= */
+input, select, textarea{
+  min-height:48px;        /* кликабельно на мобиле */
+  padding:12px 14px;
+}
+input[type="date"], input[type="month"]{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  font:inherit;
+}
+select{
+  -webkit-appearance:none;
+  appearance:none;
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  font:inherit;
+}
+
+/* =========================
+   5) ЕДИНАЯ "ЖИРНОСТЬ" ЗАГОЛОВКОВ НА МОБИЛЕ
+   (на iOS иногда выглядит толще)
+   ========================= */
+h1, h2, h3{
+  font-weight:600;                 /* фиксированное значение */
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-synthesis: none;            /* запрет "фейкового" bold/italic */
+}
+/* не даём iOS менять размер шрифта при фокусе */
+@media (max-width:640px){
+  input, select, textarea{ font-size:16px; }
+}
+
+</style>
+
+   
 </head>
 <body>
 <div class="container">
@@ -461,7 +626,7 @@ details.modal > summary::-webkit-details-marker{display:none}
     $('#debtLabel').textContent = `${fmtRUB(A.debtPaid)} из ${fmtRUB(A.debtTotal)} (${pct.toFixed(1)}%)`;
 
     // KPI месяц/сегодня
-    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
+    const month = $('#fltMonth').value || new Дате().toISOString().slice(0,7);
     const listM = state.transactions.filter(t => (t.date||'').startsWith(month));
     const sumIncome = listM.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
     const sumExpense = listM.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
@@ -475,14 +640,14 @@ details.modal > summary::-webkit-details-marker{display:none}
     const totalBal = A.base + A.fixed + A.fun + A.save;
     $('#kpiTotal').textContent = fmtRUB(totalBal);
 
-    $('#todayStr').textContent = new Date().toLocaleDateString('ru-RU');
+    $('#todayStr').textContent = new Дате().toLocaleDateString('ru-RU');
   }
 
   // --------------------------
   // РЕНДЕР ТАБЛИЦЫ ТРАНЗАКЦИЙ
   // --------------------------
   function renderTable(){
-    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
+    const month = $('#fltMonth').value || new Дате().toISOString().slice(0,7);
     const tp = $('#fltType').value;
     const acc = $('#fltAcc').value;
     const q = ($('#fltSearch').value||'').trim().toLowerCase();
