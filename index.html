@@ -5,137 +5,96 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dmitry — Personal Money Tracker</title>
 <link rel="shortcut icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text y='50%' x='50%' dominant-baseline='middle' text-anchor='middle' font-size='42'>₽</text></svg>">
-
 <style>
-/* ===== ШРИФТ ===== */
-@font-face{
-  font-family:"SF Pro Display";
-  font-style:normal;
-  font-weight:100 900;
-  src:local("SF Pro Display"), local("SFProDisplay-Regular");
-  font-display:swap;
-}
-
-/* ===== ТОКЕНЫ/БАЗА ===== */
+/* ===========================
+   БАЗОВЫЕ СТИЛИ + АДАПТИВ
+   =========================== */
 :root{
-  --bg:#fafafa; --card:#fff; --ink:#111; --muted:#666; --line:#eaeaea;
-  --ok:#1f8b4c; --warn:#cc7a00; --bad:#c0392b; --accent:#2d6cdf;
-  --radius:12px; --gap:16px; --shadow:0 2px 10px rgba(0,0,0,.06);
-  --fs-base:clamp(14px,1.4vw,16px); --fs-sm:clamp(12px,1.2vw,14px); --fs-lg:clamp(16px,1.6vw,18px);
+  --bg:#fafafa;
+  --card:#ffffff;
+  --ink:#111;
+  --muted:#666;
+  --line:#eaeaea;
+  --ok:#1f8b4c;
+  --warn:#cc7a00;
+  --bad:#c0392b;
+  --accent:#2d6cdf;
+  --radius:12px;
+  --gap:16px;
+  --shadow:0 2px 10px rgba(0,0,0,.06);
+  --fs-base:clamp(14px, 1.4vw, 16px);
+  --fs-sm:clamp(12px, 1.2vw, 14px);
+  --fs-lg:clamp(16px, 1.6vw, 18px);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font:400 var(--fs-base)/1.45 "SF Pro Display",-apple-system,system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  font:400 var(--fs-base)/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
 }
 a{color:var(--accent); text-decoration:none}
-.container{ max-width:1200px; margin:0 auto; padding:20px; }
-
-h1{ font-size:clamp(20px,2.6vw,28px); margin:0 0 12px; font-weight:600 }
-h2{ font-size:clamp(18px,2.2vw,22px); margin:0 0 12px; font-weight:600 }
-h3{ font-size:clamp(16px,2vw,20px); margin:0 0 10px; font-weight:600 }
-.muted{ color:var(--muted) }
-
-/* ===== ГРИД-УТИЛИТЫ ===== */
-.row{ display:grid; gap:var(--gap); }
-.row.cols-2{ grid-template-columns:1fr; }
-.row.cols-3{ grid-template-columns:1fr; grid-auto-rows:1fr; } /* одинаковая высота строк */
-.row.cols-4{ grid-template-columns:1fr; }
+.container{
+  max-width:1200px; margin:0 auto; padding:20px;
+}
+h1{font-size:clamp(20px,2.6vw,28px); margin:0 0 12px}
+h2{font-size:clamp(18px,2.2vw,22px); margin:0 0 12px}
+h3{font-size:clamp(16px,2vw,20px); margin:0 0 10px}
+.muted{color:var(--muted)}
+.row{display:grid; gap:var(--gap)}
 @media (min-width:640px){
-  .row.cols-2{ grid-template-columns:1fr 1fr; }
-  .row.cols-3{ grid-template-columns:1fr 1fr; }      /* планшет = 2 колонки */
-  .row.cols-4{ grid-template-columns:1fr 1fr 1fr 1fr; }
+  .row.cols-2{grid-template-columns:1fr 1fr}
+  .row.cols-3{grid-template-columns:1fr 1fr 1fr}
+  .row.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
 }
-@media (min-width:960px){
-  .row.cols-3{ grid-template-columns:1fr 1fr 1fr; }  /* десктоп = 3 колонки */
-}
-
-/* карточки внутри .cols-3 растягиваем на одинаковую высоту */
-.row.cols-3 > .card{ height:100%; display:flex; flex-direction:column; }
-
-/* ===== КАРТОЧКИ/БЭЙДЖИ ===== */
 .card{
   background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
   box-shadow:var(--shadow); padding:16px;
 }
-.card + .card{ margin-top:16px; }
-.card-title{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
-.badge{ font-size:var(--fs-sm); padding:2px 8px; border-radius:999px; background:#f2f6ff; border:1px solid #dbe7ff; color:#1f4fbf }
-
-/* KPI — две колонки (одна на мобиле) */
-.kpis{ display:grid; gap:12px; grid-template-columns:1fr 1fr; }
-@media (max-width:639.98px){ .kpis{ grid-template-columns:1fr; } }
-.kpi{ padding:12px; border:1px solid var(--line); border-radius:10px; }
-.kpi b{ font-size:var(--fs-lg) }
-
-/* Счета — 5 в ряд на десктопе */
-.grid-accounts{ display:grid; gap:12px; grid-template-columns:1fr 1fr; }
-@media (min-width:640px){ .grid-accounts{ grid-template-columns:repeat(5,1fr); } }
-.account{ border:1px solid var(--line); border-radius:10px; padding:12px; }
-.account h4{ margin:0 0 8px; font-size:var(--fs-lg) }
-.account .sum{ font-weight:700 }
-.account .hint{ font-size:var(--fs-sm); color:var(--muted) }
-
-/* ===== ФОРМЫ/ОТСТУПЫ/ВЫСОТЫ ===== */
-label{ font-size:var(--fs-sm); color:var(--muted); display:block; margin:0 0 12px; } /* даем отступ ПОСЛЕ поля */
-label > :is(input,select,textarea){ margin-top:6px; }
-
+.card-title{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
+.badge{font-size:var(--fs-sm); padding:2px 8px; border-radius:999px; background:#f2f6ff; border:1px solid #dbe7ff; color:#1f4fbf}
+.kpis{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
+.kpi{padding:12px; border:1px solid var(--line); border-radius:10px}
+.kpi b{font-size:var(--fs-lg)}
+.progress{
+  height:10px; background:#f1f1f1; border-radius:999px; overflow:hidden; border:1px solid var(--line)
+}
+.progress > i{display:block; height:100%; background:linear-gradient(90deg, #6aa3ff, #2d6cdf)}
+.grid-accounts{display:grid; gap:12px}
+@media (min-width:640px){ .grid-accounts{grid-template-columns:repeat(5,1fr)} }
+.account{
+  border:1px solid var(--line); border-radius:10px; padding:12px;
+}
+.account h4{margin:0 0 8px; font-size:var(--fs-lg)}
+.account .sum{font-weight:700}
+.account .hint{font-size:var(--fs-sm); color:var(--muted)}
+label{font-size:var(--fs-sm); color:var(--muted); display:block; margin-bottom:6px}
 input, select, textarea{
-  width:100%; min-height:48px; padding:12px 14px;
-  border:1px solid var(--line); border-radius:8px;
-  background:#fff; color:#111; font:inherit;
+  width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink);
+  font:inherit;
 }
-/* Дата/месяц — как обычные поля */
-input[type="date"], input[type="month"]{
-  -webkit-appearance:none; appearance:none;
-  width:100%; min-height:48px; line-height:1.2; padding:12px 14px;
-}
-input[type="date"]::-webkit-date-and-time-value,
-input[type="month"]::-webkit-date-and-time-value{ text-align:left }
-
-/* Select (Тип/Счёт/Откуда/Куда) — такая же высота */
-select{ -webkit-appearance:none; appearance:none; min-height:48px; line-height:1.2; padding:12px 14px; }
-
-.controls{ display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; } /* в .cols-3 кнопки прижмутся вниз */
-
-/* Кнопки */
+.controls{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
 button{
-  height:44px; min-height:44px; padding:0 16px; line-height:1;
-  border-radius:8px; border:1px solid #d4e1ff; background:#eaf1ff;
+  padding:10px 14px; border-radius:8px; border:1px solid #d4e1ff; background:#eaf1ff;
   color:#1f4fbf; font-weight:600; cursor:pointer;
-  display:inline-flex; align-items:center; justify-content:center;
 }
-button.primary{ border-color:#2d6cdf; background:#2d6cdf; color:#fff }
-button.danger{ border-color:#ffddd9; background:#ffeceb; color:#b22a1f }
-button.ghost{ background:#fff; border-color:var(--line); color:#111 }
-
-/* Кнопки в заголовке «Транзакции» — в ряд */
-.card .card-title .controls{ display:flex; flex-wrap:nowrap; gap:8px; }
-@media (max-width:640px){
-  .card .card-title{ flex-direction:column; align-items:flex-start; gap:6px; }
-  .card .card-title .controls{ width:100%; overflow:auto; }
-  .card .card-title .controls button{ white-space:nowrap; flex:0 0 auto; }
-  input, select, textarea{ font-size:16px; } /* анти-зум iOS */
-}
-
-hr{ border:none; border-top:1px solid var(--line); margin:12px 0 }
-.table{ width:100%; border-collapse:collapse }
-.table th,.table td{ border-bottom:1px solid var(--line); padding:8px; text-align:left; font-size:var(--fs-sm) }
-.table th{ color:var(--muted); font-weight:600 }
-.tag{ display:inline-block; padding:2px 8px; font-size:var(--fs-sm); border:1px solid var(--line); border-radius:999px }
-.help{ font-size:var(--fs-sm); color:var(--muted) }
-footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs-sm) }
-
-/* ===== Прогресс долга ===== */
-.progress{ height:10px; background:#f1f1f1; border-radius:999px; overflow:hidden; border:1px solid var(--line) }
-.progress > i{ display:block; height:100%; background:linear-gradient(90deg,#6aa3ff,#2d6cdf) }
-
-/* хедер справа */
-.header-right{ display:flex; align-items:center; gap:8px; }
+button.primary{border-color:#2d6cdf; background:#2d6cdf; color:#fff}
+button.danger{border-color:#ffddd9; background:#ffeceb; color:#b22a1f}
+button.ghost{background:#fff; border-color:var(--line); color:var(--ink)}
+hr{border:none; border-top:1px solid var(--line); margin:12px 0}
+.table{width:100%; border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid var(--line); padding:8px; text-align:left; font-size:var(--fs-sm)}
+.table th{color:var(--muted); font-weight:600}
+.tag{display:inline-block; padding:2px 8px; font-size:var(--fs-sm); border:1px solid var(--line); border-radius:999px}
+.help{font-size:var(--fs-sm); color:var(--muted)}
+footer{margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs-sm)}
+/* простые "модалки" на <details> */
+details.modal{border:1px solid var(--line); border-radius:var(--radius); padding:12px}
+details.modal > summary{cursor:pointer; list-style:none; font-weight:700}
+details.modal > summary::-webkit-details-marker{display:none}
+.summary-row{display:flex; align-items:center; justify-content:space-between; gap:8px}
+.summary-row small{color:var(--muted)}
 </style>
 </head>
-
 <body>
 <div class="container">
   <header style="margin-bottom:16px">
@@ -143,7 +102,7 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     <div class="muted">4 счёта + долг • локально, без бэкенда • экспорт/импорт JSON</div>
   </header>
 
-  <!-- ДАШБОРД -->
+  <!-- DASHBOARD -->
   <section class="card">
     <div class="card-title">
       <h2 style="margin:0">Дашборд</h2>
@@ -169,7 +128,7 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
       </div>
     </div>
 
-    <div class="grid-accounts" id="accountsGrid"></div>
+    <div class="grid-accounts" id="accountsGrid"><!-- заполнится из JS --></div>
 
     <div style="margin-top:12px">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px">
@@ -341,7 +300,7 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
             <th></th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody><!-- заполняется JS --></tbody>
       </table>
     </div>
   </section>
@@ -379,32 +338,51 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
 
 <script>
 /* ============================================================================
-   Personal Money Tracker — оффлайн, без бэкенда
-   ============================================================================ */
+   Personal Money Tracker — MVP v1
+   Хранение: localStorage (ключ dm_fin_v1)
+   Всё работает оффлайн. Никаких зависимостей.
+   ========================================================================== */
 (() => {
   "use strict";
 
+  // --------------------------
+  // УТИЛИТЫ
+  // --------------------------
   const $ = (sel, root=document) => root.querySelector(sel);
   const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
   const fmtRUB = (n) => (Number(n)||0).toLocaleString('ru-RU', {style:'currency', currency:'RUB', maximumFractionDigits:0});
-  const fmtNum = (n, d=0) => (Number(n)||0).toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const fmtNum = (n, d=2) => (Number(n)||0).toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
   const todayISO = () => new Date().toISOString().slice(0,10);
-  const monthStr = (d=new Date()) => d.toLocaleString('ru-RU', {month:'long', year:'numeric'});
+  const monthStr = (d=new Date()) => {
+    return d.toLocaleString('ru-RU', {month:'long', year:'numeric'});
+  };
   const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
 
+  // --------------------------
+  // ХРАНИЛИЩЕ / СТЕЙТ
+  // --------------------------
   const LS_KEY = 'dm_fin_v1';
+  /** @type {{
+      settings:{
+        accounts:{base:number,fixed:number,fun:number,save:number,debtTotal:number,debtPaid:number},
+        autosplit:{base:number,fixed:number,fun:number,save:number},
+        monthStartDay:number
+      },
+      transactions:Array<any>
+  }} */
   let state = load();
 
   function load(){
     try{
       const raw = localStorage.getItem(LS_KEY);
-      if(raw) return JSON.parse(raw);
+      if(raw){ return JSON.parse(raw); }
     }catch(e){}
+    // дефолт
     return {
       settings:{
         accounts:{ base:0, fixed:0, fun:0, save:0, debtTotal:0, debtPaid:0 },
-        autosplit:{ base:40, fixed:30, fun:10, save:20 },
+        autosplit:{ base:40, fixed:30, fun:10, save:20 }, // можно менять
         monthStartDay:1
       },
       transactions:[]
@@ -412,42 +390,49 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
   }
   function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
-  // Инициализация дат/месяца
+  // --------------------------
+  // ИНИЦИАЛИЗАЦИЯ ПОЛЕЙ
+  // --------------------------
   $('#incDate').value = todayISO();
   $('#expDate').value = todayISO();
   $('#trDate').value = todayISO();
   $('#debtDate').value = todayISO();
   $('#fltMonth').value = new Date().toISOString().slice(0,7);
 
-  // Настройки -> UI
+  // Настройки -> значения
   function fillSettingsUI(){
-    const A = state.settings.accounts;
-    $('#stBase').value = A.base;
-    $('#stFixed').value = A.fixed;
-    $('#stFun').value = A.fun;
-    $('#stSave').value = A.save;
-    $('#stDebtTotal').value = A.debtTotal;
-    $('#stDebtPaid').value = A.debtPaid;
+    $('#stBase').value = state.settings.accounts.base;
+    $('#stFixed').value = state.settings.accounts.fixed;
+    $('#stFun').value = state.settings.accounts.fun;
+    $('#stSave').value = state.settings.accounts.save;
+    $('#stDebtTotal').value = state.settings.accounts.debtTotal;
+    $('#stDebtPaid').value = state.settings.accounts.debtPaid;
     $('#stMonthStart').value = state.settings.monthStartDay;
 
-    const S = state.settings.autosplit;
-    $('#spBase').value = S.base;
-    $('#spFixed').value = S.fixed;
-    $('#spFun').value   = S.fun;
-    $('#spSave').value  = S.save;
+    $('#spBase').value = state.settings.autosplit.base;
+    $('#spFixed').value = state.settings.autosplit.fixed;
+    $('#spFun').value = state.settings.autosplit.fun;
+    $('#spSave').value = state.settings.autosplit.save;
     updateSplitSumHelp();
   }
+
   function updateSplitSumHelp(){
-    const sum = ['base','fixed','fun','save'].reduce((s,k)=>s+Number($('#sp'+k[0].toUpperCase()+k.slice(1)).value||0),0);
+    const sum = ['base','fixed','fun','save'].reduce((s,k)=>s+Number($('#sp'+cap(k)).value||0),0);
     $('#splitSumHelp').textContent = `Сумма долей: ${sum}% (должно быть 100%).`;
     $('#splitSumHelp').style.color = (sum===100)? 'var(--muted)' : 'var(--bad)';
   }
-  ['spBase','spFixed','spFun','spSave'].forEach(id => $('#'+id).addEventListener('input', updateSplitSumHelp));
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+  ['spBase','spFixed','spFun','spSave'].forEach(id => {
+    $('#'+id).addEventListener('input', updateSplitSumHelp);
+  });
 
-  // Дашборд
+  // --------------------------
+  // РЕНДЕР ДАШБОРДА
+  // --------------------------
   function renderDashboard(){
-    $('#currentMonthBadge').textContent = monthStr(new Date()));
+    $('#currentMonthBadge').textContent = monthStr(new Date());
 
+    // Балансы счетов
     const A = state.settings.accounts;
     const accs = [
       {key:'base', title:'Базовый', hint:'зарплата'},
@@ -465,14 +450,17 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
       div.innerHTML = `
         <h4>${a.title}</h4>
         <div class="sum">${fmtRUB(val)}</div>
-        <div class="hint">${a.hint}</div>`;
+        <div class="hint">${a.hint}</div>
+      `;
       grid.appendChild(div);
     });
 
+    // Прогресс долга
     const pct = (A.debtTotal>0) ? clamp((A.debtPaid/A.debtTotal)*100,0,100) : 0;
     $('#debtProgress').style.width = pct.toFixed(1)+'%';
     $('#debtLabel').textContent = `${fmtRUB(A.debtPaid)} из ${fmtRUB(A.debtTotal)} (${pct.toFixed(1)}%)`;
 
+    // KPI месяц/сегодня
     const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
     const listM = state.transactions.filter(t => (t.date||'').startsWith(month));
     const sumIncome = listM.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
@@ -490,18 +478,22 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     $('#todayStr').textContent = new Date().toLocaleDateString('ru-RU');
   }
 
-  // Таблица
+  // --------------------------
+  // РЕНДЕР ТАБЛИЦЫ ТРАНЗАКЦИЙ
+  // --------------------------
   function renderTable(){
     const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
     const tp = $('#fltType').value;
     const acc = $('#fltAcc').value;
     const q = ($('#fltSearch').value||'').trim().toLowerCase();
 
-    let list = state.transactions.slice().sort((a,b)=> (a.date>b.date? -1: a.date<b.date? 1: 0));
+    let list = state.transactions.slice().sort((a,b)=> (a.date>b.date? -1: a.date<b.date? 1: 0)); // по дате, свежие вверх
     list = list.filter(t => (t.date||'').startsWith(month));
     if(tp) list = list.filter(t => t.type===tp);
     if(acc){
-      list = list.filter(t => t.account===acc || t.fromAccount===acc || t.toAccount===acc);
+      list = list.filter(t => {
+        return t.account===acc || t.fromAccount===acc || t.toAccount===acc;
+      });
     }
     if(q){
       list = list.filter(t => ((t.category||'')+(t.note||'')).toLowerCase().includes(q));
@@ -511,6 +503,7 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     tbody.innerHTML = '';
     for(const t of list){
       const tr = document.createElement('tr');
+      const sum = (t.type==='expense' || t.type==='transfer' && t.fromAccount) ? -t.amount : t.amount;
       const accounts = (
         t.type==='transfer' ? `${labelAcc(t.fromAccount)} → ${labelAcc(t.toAccount)}` :
         t.type==='income'   ? `${labelAcc(t.account)} (+)` :
@@ -524,37 +517,52 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
         <td style="white-space:nowrap">${(t.type==='expense'||(t.type==='transfer'&&t.fromAccount))?'-':''}${fmtNum(t.amount,0)} ₽</td>
         <td>${t.category||'—'}</td>
         <td>${t.note||''}</td>
-        <td style="text-align:right"><button class="ghost" data-del="${t.id}">✕</button></td>`;
+        <td style="text-align:right"><button class="ghost" data-del="${t.id}">✕</button></td>
+      `;
       tbody.appendChild(tr);
     }
 
     $('#listInfo').textContent = `Показано: ${list.length} операций. Всего в базе: ${state.transactions.length}.`;
+    // навесить удаление
     $$('button[data-del]').forEach(btn=>{
       btn.onclick = () => {
         const id = btn.getAttribute('data-del');
         state.transactions = state.transactions.filter(t=>t.id!==id);
-        save(); renderAll();
+        save();
+        renderAll();
       };
     });
   }
-  function labelAcc(k){ return ({base:'Базовый', fixed:'Расходный', fun:'Весёлый', save:'Накопления'})[k] || '—'; }
-  function labelType(t){ return ({income:'Доход', expense:'Расход', transfer:'Перевод', debt:'Долг'})[t] || t; }
 
-  // Доход
+  function labelAcc(k){
+    return ({base:'Базовый', fixed:'Расходный', fun:'Весёлый', save:'Накопления'})[k] || '—';
+  }
+  function labelType(t){
+    return ({income:'Доход', expense:'Расход', transfer:'Перевод', debt:'Долг'})[t] || t;
+  }
+
+  // --------------------------
+  // ОПЕРАЦИИ: ДОБАВИТЬ ДОХОД
+  // --------------------------
   function incomeSplit(amount){
     const s = state.settings.autosplit;
-    const round = (n)=>Math.round(Number(n)||0);
     const parts = {
       base: round(amount * (s.base/100)),
       fixed: round(amount * (s.fixed/100)),
-      fun:   round(amount * (s.fun/100)),
-      save:  round(amount * (s.save/100)),
+      fun: round(amount * (s.fun/100)),
+      save: round(amount * (s.save/100)),
     };
+    // Нормализация до копейки/рубля: пусть будет целые рубли
     const sum = parts.base + parts.fixed + parts.fun + parts.save;
     const delta = round(amount - sum);
-    if(delta!==0) parts.base += delta;
+    if(delta !== 0){
+      // доброс в "базовый"
+      parts.base += delta;
+    }
     return parts;
   }
+  const round = (n) => Math.round((Number(n)||0));
+
   $('#btnPreviewSplit').onclick = () => {
     const amount = Number($('#incAmount').value||0);
     if(!amount){ $('#splitPreview').style.display='none'; return; }
@@ -563,6 +571,7 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     $('#splitPreview').textContent =
       `Распределение: Базовый ${fmtRUB(p.base)}, Расходный ${fmtRUB(p.fixed)}, Весёлый ${fmtRUB(p.fun)}, Накопления ${fmtRUB(p.save)}.`;
   };
+
   $('#btnAddIncome').onclick = () => {
     const date = $('#incDate').value || todayISO();
     const amount = Number($('#incAmount').value||0);
@@ -570,20 +579,32 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     const note = ($('#incNote').value||'');
     if(amount<=0) return alert('Введите сумму дохода > 0');
 
+    // 1) создаём "логические" транзакции дохода (по одному на счёт)
     const split = incomeSplit(amount);
-    const A = state.settings.accounts;
+    const txs = [];
     for(const k of ['base','fixed','fun','save']){
-      if(split[k]>0){
-        state.transactions.push({ id:uid(), date, type:'income', account:k, amount: split[k], category, note });
-        A[k] += split[k];
+      if(split[k] > 0){
+        txs.push({
+          id: uid(), date, type:'income', account:k, amount: split[k],
+          category, note
+        });
+        state.settings.accounts[k] += split[k];
       }
     }
+    state.transactions.push(...txs);
     save();
-    $('#incAmount').value=''; $('#incNote').value=''; $('#splitPreview').style.display='none';
+    clearIncomeForm();
     renderAll();
   };
+  function clearIncomeForm(){
+    $('#incAmount').value = '';
+    $('#incNote').value = '';
+    $('#splitPreview').style.display='none';
+  }
 
-  // Расход
+  // --------------------------
+  // ОПЕРАЦИИ: ДОБАВИТЬ РАСХОД
+  // --------------------------
   $('#btnAddExpense').onclick = () => {
     const date = $('#expDate').value || todayISO();
     const amount = Number($('#expAmount').value||0);
@@ -591,36 +612,51 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     const category = ($('#expCategory').value||'Расход');
     const note = ($('#expNote').value||'');
     if(amount<=0) return alert('Введите сумму расхода > 0');
-    const A = state.settings.accounts;
-    if(A[account] < amount && !confirm('На счёте не хватает средств. Продолжить?')) return;
 
-    state.transactions.push({ id:uid(), date, type:'expense', account, amount, category, note });
-    A[account] -= amount;
+    if(state.settings.accounts[account] < amount){
+      if(!confirm('На счёте не хватает средств. Продолжить?')) return;
+    }
+
+    state.transactions.push({
+      id: uid(), date, type:'expense', account, amount, category, note
+    });
+    state.settings.accounts[account] -= amount;
     save();
-    $('#expAmount').value=''; $('#expNote').value='';
+    $('#expAmount').value='';
+    $('#expNote').value='';
     renderAll();
   };
 
-  // Перевод
+  // --------------------------
+  // ОПЕРАЦИИ: ПЕРЕВОД
+  // --------------------------
   $('#btnTransfer').onclick = () => {
     const date = $('#trDate').value || todayISO();
     const amount = Number($('#trAmount').value||0);
     const from = $('#trFrom').value;
-    const to = $('#trTo').value;
+    const по = $('#trTo').value;
     const note = ($('#trNote').value||'');
     if(amount<=0) return alert('Введите сумму перевода > 0');
-    if(from===to) return alert('Выберите разные счета');
-    const A = state.settings.accounts;
-    if(A[from] < amount && !confirm('На счёте-источнике не хватает средств. Продолжить?')) return;
+    if(from===по) return alert('Выберите разные счета');
 
-    state.transactions.push({ id:uid(), date, type:'transfer', fromAccount:from, toAccount:to, amount, category:'Перевод', note });
-    A[from] -= amount; A[to] += amount;
+    if(state.settings.accounts[from] < amount){
+      if(!confirm('На счёте-источнике не хватает средств. Продолжить?')) return;
+    }
+
+    state.transactions.push({
+      id: uid(), date, type:'transfer', fromAccount:from, toAccount:по, amount, category:'Перевод', note
+    });
+    state.settings.accounts[from] -= amount;
+    state.settings.accounts[по] += amount;
     save();
-    $('#trAmount').value=''; $('#trNote').value='';
+    $('#trAmount').value='';
+    $('#trNote').value='';
     renderAll();
   };
 
-  // Платёж по долгу
+  // --------------------------
+  // ОПЕРАЦИИ: ПЛАТЁЖ ПО ДОЛГУ
+  // --------------------------
   $('#btnDebtPay').onclick = () => {
     const date = $('#debtDate').value || todayISO();
     const amount = Number($('#debtPayAmount').value||0);
@@ -628,19 +664,32 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     const note = ($('#debtNote').value||'');
     if(amount<=0) return alert('Введите сумму платежа > 0');
 
-    state.transactions.push({ id:uid(), date, type:'debt', amount, account: from || undefined, category:'Платёж по долгу', note });
+    // транзакция "долг"
+    state.transactions.push({
+      id: uid(), date, type:'debt', amount, account: from || undefined,
+      category:'Платёж по долгу', note
+    });
 
+    // учесть списание с счёта, если выбран
     if(from){
-      const A = state.settings.accounts;
-      if(A[from] < amount && !confirm('На счёте не хватает средств. Продолжить?')) return;
-      A[from] -= amount;
+      if(state.settings.accounts[from] < amount){
+        if(!confirm('На счёте не хватает средств. Продолжить?')) return;
+      }
+      state.settings.accounts[from] -= amount;
     }
-    const A = state.settings.accounts;
-    A.debtPaid = clamp(Math.round(A.debtPaid + amount), 0, Math.round(A.debtTotal));
+
+    // обновить прогресс долга
+    state.settings.accounts.debtPaid = clamp(
+      round(state.settings.accounts.debtPaid + amount),
+      0,
+      round(state.settings.accounts.debtTotal)
+    );
     save();
-    $('#debtPayAmount').value=''; $('#debtNote').value='';
+    $('#debtPayAmount').value='';
+    $('#debtNote').value='';
     renderAll();
   };
+
   $('#btnDebtReset').onclick = () => {
     if(confirm('Сбросить прогресс погашения долга?')){
       state.settings.accounts.debtPaid = 0;
@@ -648,13 +697,17 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     }
   };
 
-  // Фильтры
-  $('#fltMonth').oninput = ()=>{ renderDashboard(); renderTable(); };
+  // --------------------------
+  // ФИЛЬТРЫ ТРАНЗАКЦИЙ
+  // --------------------------
+  $('#fltMonth').oninput = () => { renderDashboard(); renderTable(); };
   $('#fltType').oninput = renderTable;
   $('#fltAcc').oninput  = renderTable;
-  $('#fltSearch').oninput = renderTable;
+  $('#fltSearch').oninput = () => { renderTable(); };
 
-  // Настройки
+  // --------------------------
+  // НАСТРОЙКИ
+  // --------------------------
   $('#btnSaveSettings').onclick = () => {
     const A = state.settings.accounts;
     A.base = Number($('#stBase').value||0);
@@ -679,32 +732,39 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     alert('Настройки сохранены.');
   };
 
-  // Демо
+  // демо-данные
   $('#btnFillDemo').onclick = () => {
     if(!confirm('Загрузить демо-данные и перезаписать текущие?')) return;
-    const d = (shift)=>{ const z=new Date(); z.setDate(z.getDate()+shift); return z.toISOString().slice(0,10); };
     state = {
       settings:{
         accounts:{ base:35000, fixed:20000, fun:7000, save:45000, debtTotal:300000, debtPaid:65000 },
-        autosplit:{ base:40, fixed:30, fun:10, save:20 }, monthStartDay:1
+        autosplit:{ base:40, fixed:30, fun:10, save:20 },
+        monthStartDay:1
       },
       transactions:[
-        {id:uid(), date:d(-25), type:'income', account:'base', amount:60000, category:'Зарплата', note:'автосплит'},
-        {id:uid(), date:d(-25), type:'income', account:'fixed', amount:45000, category:'Зарплата', note:'автосплит'},
-        {id:uid(), date:d(-25), type:'income', account:'fun', amount:15000, category:'Зарплата', note:'автосплит'},
-        {id:uid(), date:d(-25), type:'income', account:'save', amount:30000, category:'Зарплата', note:'автосплит'},
-        {id:uid(), date:d(-7), type:'expense', account:'fixed', amount:12000, category:'Аренда', note:''},
-        {id:uid(), date:d(-6), type:'expense', account:'fixed', amount:1500, category:'Связь', note:''},
-        {id:uid(), date:d(-5), type:'expense', account:'base', amount:2200, category:'Еда', note:'супермаркет'},
-        {id:uid(), date:d(-4), type:'transfer', fromAccount:'base', toAccount:'save', amount:5000, category:'Перевод', note:'на подушку'},
-        {id:uid(), date:d(-3), type:'expense', account:'fun', amount:3000, category:'Развлечения', note:'кино/бар'},
-        {id:uid(), date:d(-2), type:'debt', amount:15000, account:'base', category:'Платёж по долгу', note:'погашение'},
+        {id:uid(), date: isoShift(-25), type:'income', account:'base', amount:60000, category:'Зарплата', note:'автосплит'},
+        {id:uid(), date: isoShift(-25), type:'income', account:'fixed', amount:45000, category:'Зарплата', note:'автосплит'},
+        {id:uid(), date: isoShift(-25), type:'income', account:'fun', amount:15000, category:'Зарплата', note:'автосплит'},
+        {id:uid(), date: isoShift(-25), type:'income', account:'save', amount:30000, category:'Зарплата', note:'автосплит'},
+
+        {id:uid(), date: isoShift(-7), type:'expense', account:'fixed', amount:12000, category:'Аренда', note:''},
+        {id:uid(), date: isoShift(-6), type:'expense', account:'fixed', amount:1500, category:'Связь', note:''},
+        {id:uid(), date: isoShift(-5), type:'expense', account:'base', amount:2200, category:'Еда', note:'супермаркет'},
+        {id:uid(), date: isoShift(-4), type:'transfer', fromAccount:'base', toAccount:'save', amount:5000, category:'Перевод', note:'на подушку'},
+        {id:uid(), date: isoShift(-3), type:'expense', account:'fun', amount:3000, category:'Развлечения', note:'кино/бар'},
+        {id:uid(), date: isoShift(-2), type:'debt', amount:15000, account:'base', category:'Платёж по долгу', note:'погашение'},
       ]
     };
     save(); renderAll();
   };
+  function isoShift(дней){
+    const d = new Дате(); d.setDate(d.getDate()+дней);
+    return d.toISOString().slice(0,10);
+  }
 
-  // Экспорт/Импорт/Wipe
+  // --------------------------
+  // ЭКСПОРТ / ИМПОРТ / WIPE
+  // --------------------------
   $('#btnExport').onclick = () => {
     const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
     const a = document.createElement('a');
@@ -715,14 +775,20 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
   };
   $('#btnImport').onclick = () => { $('#fileImport').click(); };
   $('#fileImport').onchange = async (e) => {
-    const file = e.target.files[0]; if(!file) return;
+    const file = e.target.files[0];
+    if(!file) return;
     try{
       const text = await file.text();
       const data = JSON.parse(text);
       if(!data.settings || !data.transactions) throw new Error('Неверный формат файла');
-      state = data; save(); renderAll(); alert('Импорт выполнен.');
-    }catch(err){ alert('Ошибка импорта: ' + err.message); }
-    finally{ e.target.value = ''; }
+      state = data;
+      save(); renderAll();
+      alert('Импорт выполнен.');
+    }catch(err){
+      alert('Ошибка импорта: ' + err.message);
+    }finally{
+      e.target.value = '';
+    }
   };
   $('#btnWipe').onclick = () => {
     if(confirm('Удалить все данные? Это действие необратимо.')){
@@ -732,8 +798,18 @@ footer{ margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs
     }
   };
 
-  function renderAll(){ fillSettingsUI(); renderDashboard(); renderTable(); }
+  // --------------------------
+  // ГЛАВНЫЙ РЕНДЕР
+  // --------------------------
+  function renderAll(){
+    fillSettingsUI();
+    renderDashboard();
+    renderTable();
+  }
+
+  // старт
   renderAll();
+
 })();
 </script>
 </body>
