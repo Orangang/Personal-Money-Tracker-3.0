@@ -62,9 +62,10 @@ h3{font-size:clamp(16px,2vw,20px); margin:0 0 10px}
 .account h4{margin:0 0 8px; font-size:var(--fs-lg)}
 .account .sum{font-weight:700}
 .account .hint{font-size:var(--fs-sm); color:var(--muted)}
-label{font-size:var(--fs-sm);color:var(--muted);display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+/* ГЛАВНАЯ ПРАВКА: отступы label */
+label{font-size:var(--fs-sm); color:var(--muted); display:flex; flex-direction:column; gap:8px; margin-bottom:12px}
 input, select, textarea{
-  width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:#theink;
+  width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:#111;
   font:inherit;
 }
 .controls{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
@@ -82,12 +83,17 @@ hr{border:none; border-top:1px solid var(--line); margin:12px 0}
 .tag{display:inline-block; padding:2px 8px; font-size:var(--fs-sm); border:1px solid var(--line); border-radius:999px}
 .help{font-size:var(--fs-sm); color:var(--muted)}
 footer{margin:24px 0; text-align:center; color:var(--muted); font-size:var(--fs-sm)}
+footer a{color:inherit; text-decoration:none; transition:color .2s ease}
+footer a:hover{color:var(--accent); text-decoration:underline}
 /* простые "модалки" на <details> */
 details.modal{border:1px solid var(--line); border-radius:var(--radius); padding:12px}
 details.modal > summary{cursor:pointer; list-style:none; font-weight:700}
 details.modal > summary::-webkit-details-marker{display:none}
 .summary-row{display:flex; align-items:center; justify-content:space-between; gap:8px}
 .summary-row small{color:var(--muted)}
+/* Точный зазор 12px между Дата/Сумма в 3-й колонке (оба блока details) */
+.row.cols-3>.card:nth-child(3) details.modal .row,
+.row.cols-3>.card:nth-child(3) .row.cols-2{gap:12px !important; column-gap:12px !important; row-gap:12px !important}
 </style>
 
 <style>
@@ -154,7 +160,6 @@ h1, h2, h3{
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   font-synthesis:none;
 }
-.row.cols-3>.card:nth-child(3) details.modal .row{gap:12px!important}
 </style>
 </head>
 <body>
@@ -412,9 +417,9 @@ h1, h2, h3{
   const fmtRUB = (n) => (Number(n)||0).toLocaleString('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0});
   const fmtNum = (n, d=2) => (Number(n)||0).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d});
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const todayISO = () => new Date().toISOString().slice(0,10);
-  const monthStr = (d=new Date()) => d.toLocaleString('ru-RU',{month:'long', year:'numeric'});
-  const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+  const todayISO = () => new Дате().toISOString().slice(0,10);
+  const monthStr = (d=new Дате()) => d.toLocaleString('ru-RU',{month:'long', year:'numeric'});
+  const uid = () => Math.random().toString(36).slice(2,10) + Дате.now().toString(36).slice(-4);
   const round = (n) => Math.round((Number(n)||0));
 
   // СТЕЙТ
@@ -442,7 +447,14 @@ h1, h2, h3{
   $('#expDate').value = todayISO();
   $('#trDate').value = todayISO();
   $('#debtDate').value = todayISO();
-  $('#fltMonth').value = new Date().toISOString().slice(0,7);
+
+  // Выставляем месяц фильтра: если в базе есть транзакции — берём самый поздний месяц, иначе текущий
+  function initMonthFilter(){
+    const months = state.transactions.map(t => (t.date||'').slice(0,7)).filter(Boolean);
+    const def = months.length ? months.sort().slice(-1)[0] : new Date().toISOString().slice(0,7);
+    $('#fltMonth').value = def;
+  }
+  initMonthFilter();
 
   // Настройки -> значения
   function fillSettingsUI(){
@@ -470,7 +482,10 @@ h1, h2, h3{
 
   // РЕНДЕР ДАШБОРДА
   function renderDashboard(){
-    $('#currentMonthBadge').textContent = monthStr(new Date());
+    // бейдж месяца всегда из выбранного фильтра
+    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
+    const [y,m] = month.split('-').map(Number);
+    $('#currentMonthBadge').textContent = new Date(y, m-1, 1).toLocaleString('ru-RU',{month:'long', year:'numeric'});
 
     const A = state.settings.accounts;
     const accs = [
@@ -498,7 +513,6 @@ h1, h2, h3{
     $('#debtProgress').style.width = pct.toFixed(1)+'%';
     $('#debtLabel').textContent = `${fmtRUB(A.debtPaid)} из ${fmtRUB(A.debtTotal)} (${pct.toFixed(1)}%)`;
 
-    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
     const listM = state.transactions.filter(t => (t.date||'').startsWith(month));
     const sumIncome = listM.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
     const sumExpense = listM.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
@@ -512,17 +526,18 @@ h1, h2, h3{
     const totalBal = A.base + A.fixed + A.fun + A.save;
     $('#kpiTotal').textContent = fmtRUB(totalBal);
 
-    $('#todayStr').textContent = new Дате().toLocaleDateString('ru-RU');
+    $('#todayStr').textContent = new Date().toLocaleDateString('ru-RU');
   }
 
   // РЕНДЕР ТАБЛИЦЫ
   function renderTable(){
-    const month = $('#fltMonth').value || new Дате().toISOString().slice(0,7);
+    const month = $('#fltMonth').value || new Date().toISOString().slice(0,7);
     const tp = $('#fltType').value;
     const acc = $('#fltAcc').value;
     const q = ($('#fltSearch').value||'').trim().toLowerCase();
 
     let list = state.transactions.slice().sort((a,b)=> (a.date>b.date? -1: a.date<b.date? 1: 0));
+    // фильтр по месяцу
     list = list.filter(t => (t.date||'').startsWith(month));
     if(tp) list = list.filter(t => t.type===tp);
     if(acc){
@@ -530,6 +545,13 @@ h1, h2, h3{
     }
     if(q){
       list = list.filter(t => ((t.category||'')+(t.note||'')).toLowerCase().includes(q));
+    }
+
+    // Если "Все" и список пустой для выбранного месяца — показываем все за последние 12 месяцев как graceful fallback
+    if(!tp && !acc && !q && list.length===0){
+      list = state.transactions.slice().sort((a,b)=> (a.date>b.date? -1: a.date<b.date? 1: 0));
+      const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth()-12);
+      list = list.filter(t => (t.date && new Date(t.date) >= cutoff));
     }
 
     const tbody = $('#txTable tbody');
@@ -631,16 +653,16 @@ h1, h2, h3{
     const date = $('#trDate').value || todayISO();
     const amount = Number($('#trAmount').value||0);
     const from = $('#trFrom').value;
-    const по = $('#trTo').value;
+    const to = $('#trTo').value;
     const note = ($('#trNote').value||'');
     if(amount<=0) return alert('Введите сумму перевода > 0');
-    if(from===по) return alert('Выберите разные счета');
+    if(from===to) return alert('Выберите разные счета');
     if(state.settings.accounts[from] < amount){
       if(!confirm('На счёте-источнике не хватает средств. Продолжить?')) return;
     }
-    state.transactions.push({id:uid(), date, type:'transfer', fromAccount:from, toAccount:по, amount, category:'Перевод', note});
+    state.transactions.push({id:uid(), date, type:'transfer', fromAccount:from, toAccount:to, amount, category:'Перевод', note});
     state.settings.accounts[from] -= amount;
-    state.settings.accounts[по] += amount;
+    state.settings.accounts[to] += amount;
     save();
     $('#trAmount').value=''; $('#trNote').value='';
     renderAll();
@@ -728,10 +750,10 @@ h1, h2, h3{
         {id:uid(), date: isoShift(-2), type:'debt', amount:15000, account:'base', category:'Платёж по долгу', note:'погашение'},
       ]
     };
-    save(); renderAll();
+    save(); initMonthFilter(); renderAll();
   };
-  function isoShift(дней){
-    const d = new Дате(); d.setDate(d.getDate()+дней);
+  function isoShift(days){
+    const d = new Date(); d.setDate(d.getDate()+days);
     return d.toISOString().slice(0,10);
   }
 
@@ -753,7 +775,7 @@ h1, h2, h3{
       const data = JSON.parse(text);
       if(!data.settings || !data.transactions) throw new Error('Неверный формат файла');
       state = data;
-      save(); renderAll();
+      save(); initMonthFilter(); renderAll();
       alert('Импорт выполнен.');
     }catch(err){
       alert('Ошибка импорта: ' + err.message);
@@ -765,6 +787,7 @@ h1, h2, h3{
     if(confirm('Удалить все данные? Это действие необратимо.')){
       localStorage.removeItem(LS_KEY);
       state = load();
+      initMonthFilter();
       renderAll();
     }
   };
@@ -773,7 +796,7 @@ h1, h2, h3{
   function renderAll(){ fillSettingsUI(); renderDashboard(); renderTable(); }
   renderAll();
 
-  // Мини-логгер ошибок (поможет ловить подобные опечатки на проде)
+  // Мини-логгер ошибок
   window.addEventListener('error', e => console.error('GlobalError:', e.message, e.filename, e.lineno));
   window.addEventListener('unhandledrejection', e => console.error('UnhandledRejection:', e.reason));
 })();
